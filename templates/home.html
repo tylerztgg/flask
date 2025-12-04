@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Photo App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <header>
+      <h1>Photo App</h1>
+      <nav>
+        <p>{{ username }}</p>
+        <a href="https://www.google.com" style="text-decoration: none;">Sign out</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="recommendationPanel">
+        <div class="profile">
+          <img src="{{ profile_image or 'https://via.placeholder.com/120' }}" alt="profile_img">
+          <p id="profileName">{{ username }}</p>
+        </div>
+
+        <p id="suggestionsforyou">suggestions for you</p>
+        {% for suggestion in suggestions %}
+          <div class="suggestedAccount">
+            <img src="{{ suggestion.img }}" alt="{{ suggestion.name }} profile">
+            <div class="nameBox">
+              <p class="suggestedPeople">{{ suggestion.name }}</p>
+              <p class="suggestWord">{{ suggestion.note }}</p>
+            </div>
+            <a class="followLink" href="{{ suggestion.link }}">follow</a>
+          </div>
+        {% else %}
+          <p class="suggestWord">No new suggestions.</p>
+        {% endfor %}
+      </section>
+
+      <section class="storyPanel">
+        {% for story in stories %}
+          <div class="story">
+            <img src="{{ story.img }}" alt="{{ story.name }} story">
+            <p>{{ story.name }}</p>
+          </div>
+        {% else %}
+          <p class="suggestWord">No stories yet.</p>
+        {% endfor %}
+      </section>
+
+      <section class="cardPanel">
+        {% for post in posts %}
+          <div class="card">
+            <div class="postHeader">
+              <div class="postUser">{{ post.user }}</div>
+              <div><em class="fas fa-ellipsis-h"></em></div>
+            </div>
+
+            <div class="postPic">
+              <img src="{{ post.image if post.image.startswith('http') else url_for('static', filename=post.image) }}" alt="post from {{ post.user }}">
+            </div>
+
+            <div class="postContent">
+              <div class="icons">
+                <div class="threeIcons">
+                  <em class="far fa-heart"></em>
+                  <em class="far fa-comment"></em>
+                  <em class="far fa-paper-plane"></em>
+                </div>
+                <div>
+                  <em class="far fa-bookmark"></em>
+                </div>
+              </div>
+
+              <p><strong>{{ post.likes }} Likes</strong></p>
+
+              <div class="realContent">
+                <p class="postUser"><strong>{{ post.user }}</strong></p>
+                <p>{{ post.caption }}</p>
+                {% if post.more_link %}
+                  <a href="{{ post.more_link }}" style="text-decoration: none;">more</a>
+                {% endif %}
+              </div>
+
+              <div class="comments">
+                {% for comment in post.comments %}
+                  <div class="comment">
+                    <p class="postUser"><strong>{{ comment.user }}</strong></p>
+                    <p>{{ comment.text }}</p>
+                  </div>
+                {% endfor %}
+                {% if post.time %}
+                  <div class="postTime" style="color: darkgrey;font: 0.9em sans-serif;">{{ post.time }}</div>
+                {% endif %}
+              </div>
+
+              <div class="addCommentSection">
+                <div class="addComment">
+                  <em class="far fa-smile"></em>
+                  <input placeholder="Add a comment">
+                </div>
+                <a href="https://www.google.com" style="text-decoration: none">Post</a>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <p class="suggestWord">No posts to show yet.</p>
+        {% endfor %}
+      </section>
+    </main>
+  </body>
+</html>
